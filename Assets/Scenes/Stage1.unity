@@ -713,6 +713,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4488531182245040153, guid: 94d7b7d9ac3e63542bbe908bd37d62dc, type: 3}
+      propertyPath: gameTime
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 4519776109608173729, guid: 94d7b7d9ac3e63542bbe908bd37d62dc, type: 3}
       propertyPath: m_Camera
       value: 
