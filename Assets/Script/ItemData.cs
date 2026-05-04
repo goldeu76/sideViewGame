@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class ItemData : MonoBehaviour
 {
-    public int value = 0; // 아이템이 가지는 값 (점수)
+    public int value = 0; // 아이템 점수 값
 
     void Start()
     {
-        // 초기 처리 없음
+        // 초기화 필요 없음
     }
 
     void Update()
     {
-        // 프레임 처리 없음
+        // 사용 안함
     }
 }

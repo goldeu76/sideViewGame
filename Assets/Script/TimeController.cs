@@ -5,32 +5,35 @@ using UnityEngine;
 public class TimeController : MonoBehaviour
 {
     public bool isCountDown = true; // true: 카운트다운 / false: 카운트업
-    public float gameTime = 0f;     // 기준 시간 (초)
+    public float gameTime = 0f; // 기준 시간 (에디터 입력값)
     public bool isTimeOver = false; // 시간 종료 여부
-    public float displayTime = 0f;  // UI 표시용 시간
+    public float displayTime = 0f; // UI 표시용 시간
 
-    float times = 0f; // 경과 시간
+    float times = 0f; // 실제 경과 시간
 
     void Start()
     {
+        // 카운트다운일 경우 시작값을 전체 시간으로 설정
         if (isCountDown)
         {
-            displayTime = gameTime; // 시작 시 남은 시간 초기화
+            displayTime = gameTime;
         }
     }
 
     void Update()
     {
-        if (isTimeOver == false) // 시간이 끝나지 않았을 때만 진행
+        // 시간이 끝나지 않았을 때만 동작
+        if (isTimeOver == false)
         {
-            times += Time.deltaTime; // 경과 시간 누적
+            times += Time.deltaTime; // 시간 누적
 
             if (isCountDown)
             {
                 // 남은 시간 계산
                 displayTime = gameTime - times;
 
-                if (displayTime <= 0f) // 시간 종료
+                // 0 이하이면 종료 처리
+                if (displayTime <= 0f)
                 {
                     displayTime = 0f;
                     isTimeOver = true;
@@ -38,10 +41,11 @@ public class TimeController : MonoBehaviour
             }
             else
             {
-                // 누적 시간 표시 (카운트업)
+                // 카운트업 (경과 시간 표시)
                 displayTime = times;
 
-                if (displayTime >= gameTime) // 목표 시간 도달
+                // 목표 시간 도달 시 종료
+                if (displayTime >= gameTime)
                 {
                     displayTime = gameTime;
                     isTimeOver = true;

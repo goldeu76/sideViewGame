@@ -9,9 +9,9 @@ public class CameraManager : MonoBehaviour
     public float topLimit = 0.0f;    // 카메라 상단 제한
     public float bottomLimit = 0.0f; // 카메라 하단 제한
 
-    public bool isForceScrollX = false; // X축 강제 스크롤 여부
+    public bool isForceScrollX = false; // X축 강제 스크롤 사용 여부
     public float forceSpeedX = 0.5f;    // X축 강제 이동 속도
-    public bool isForceScrollY = false; // Y축 강제 스크롤 여부
+    public bool isForceScrollY = false; // Y축 강제 스크롤 사용 여부
     public float forceSpeedY = 0.5f;    // Y축 강제 이동 속도
 
     public GameObject subScreen; // 패럴랙스 배경
@@ -32,13 +32,14 @@ public class CameraManager : MonoBehaviour
             float y = player.transform.position.y;
             float z = transform.position.z; // 카메라 z 유지
 
-            // 강제 스크롤 (플레이어 무시하고 일정 속도로 이동)
+            // ===== 강제 스크롤 X =====
+            // 플레이어 위치 무시하고 일정 속도로 이동
             if (isForceScrollX)
             {
                 x = transform.position.x + (forceSpeedX * Time.deltaTime);
             }
 
-            // X축 이동 제한
+            // X 범위 제한
             if (x < leftLimit)
             {
                 x = leftLimit;
@@ -48,13 +49,13 @@ public class CameraManager : MonoBehaviour
                 x = rightLimit;
             }
 
-            // 강제 스크롤 Y
+            // ===== 강제 스크롤 Y =====
             if (isForceScrollY)
             {
                 y = transform.position.y + (forceSpeedY * Time.deltaTime);
             }
 
-            // Y축 이동 제한
+            // Y 범위 제한
             if (y < bottomLimit)
             {
                 y = bottomLimit;
@@ -68,13 +69,13 @@ public class CameraManager : MonoBehaviour
             transform.position = new Vector3(x, y, z);
 
             // ===== 패럴랙스 (Parallax) =====
-            // 카메라보다 느리게 움직이는 배경을 만들어 원근감 표현
+            // 배경을 더 느리게 움직여 원근감 생성
             if (subScreen != null)
             {
                 y = subScreen.transform.position.y; // 기존 y 유지
                 z = subScreen.transform.position.z; // 기존 z 유지
 
-                // 카메라 x의 절반만 적용 → 배경이 더 느리게 이동
+                // 카메라 x의 절반만 적용 → 배경이 느리게 이동
                 Vector3 v = new Vector3(x / 2.0f, y, z);
                 subScreen.transform.position = v;
             }
