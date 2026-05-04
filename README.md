@@ -1,4 +1,4 @@
-# Swipe Platformer Prototype
+# Swipe Platformer Prototype v5
 
 # 작성 에디터 버전 : Unity 2022.3.62f1
 
@@ -6,162 +6,118 @@
 
 ## 📌 프로젝트 소개
 
-Unity로 제작한 2D 플랫폼 게임 프로토타입입니다.
-플레이어 이동, 점프, 애니메이션, 카메라 시스템, 타이머, UI까지 포함하여
-기본적인 게임 플레이 구조를 완성했습니다.
-
-v4에서는 단순 기능 구현을 넘어서
-각 시스템을 연결하고, 다양한 게임 상황(시간 제한, 강제 스크롤 등)을 처리할 수 있도록 확장했습니다.
+Unity로 제작한 2D 플랫폼 액션 프로토타입입니다.
+이동 / 점프 / 아이템 / 기믹 / 타이머 / 점수 / 카메라 / 씬 전환까지 포함한 확장형 구조입니다.
 
 ---
 
 ## 🎮 주요 기능
 
-* 좌/우 이동 (Input.GetAxisRaw 기반)
-* 스프라이트 방향 전환 (localScale)
-* 점프 시스템 (Rigidbody2D Impulse)
-* 입력 / 물리 처리 분리 (Update / FixedUpdate)
-* 바닥 체크 (Physics2D Linecast)
-* 상태 기반 애니메이션 시스템
-* 게임 상태 관리 (playing / gameclear / gameover / gameend)
-* Goal / Dead 트리거 기반 이벤트 처리
-* 카메라 추적 + 이동 제한 시스템
-* 카메라 강제 스크롤 (자동 이동)
-* 패럴랙스 효과 (배경 원근감)
+* 좌/우 이동 (Rigidbody2D 기반)
+* 점프 시스템 (Impulse Force)
+* 바닥 판정 (Linecast)
+* 애니메이션 상태 전환
+* 아이템 획득 및 점수 시스템
 * 타이머 시스템 (카운트다운 / 카운트업)
-* 시간 종료 시 게임오버 처리
-* UI (결과 화면 / 타이머 표시)
+* 게임 상태 관리 (playing / gameclear / gameover)
+* 씬 전환 기능
+* 결과 UI 및 최종 점수 출력
+* 기믹 블록 (낙하 / 삭제 / 페이드)
+* 카메라 제한 이동 + 강제 스크롤
+* 패럴랙스 효과 (배경 시차 이동)
 
 ---
 
 ## 🧠 핵심 시스템 설명
 
-### 🎯 Player Controller
+### 플레이어 이동
 
-* 입력(Update)과 물리(FixedUpdate) 분리 구조
-* goJump 플래그로 입력 → 물리 타이밍 동기화
-* 상태 기반으로 전체 행동 제어
+* Input.GetAxisRaw 사용
+* Rigidbody2D.velocity 기반 이동
+* 좌우 반전 (transform.localScale)
 
----
+### 점프
 
-### 🎬 Animation System
+* Impulse Force 기반 점프
+* onGround 상태에서만 점프 가능
 
-* 현재/이전 상태 비교 방식
-* 변경 시에만 애니메이션 실행 (중복 방지)
+### 아이템
 
----
+* ScoreItem 태그로 충돌 감지
+* ItemData.value로 점수 저장
+* 획득 시 Player score 증가
 
-### 🧩 Game State
+### 타이머
 
-* string 기반 상태 관리
-* 게임 흐름 제어 핵심
+* 카운트다운 / 카운트업 지원
+* gameTime 기준 제한
+* UI Text 출력
+* 시간 종료 시 GameOver
 
-```csharp
-playing → gameclear / gameover → gameend
-```
+### 게임 매니저
 
----
-
-### ⏱ Timer System
-
-* TimeController를 통한 시간 관리
-* 카운트다운 / 카운트업 모두 지원
-
-```csharp
-displayTime = gameTime - times;
-```
-
-* 시간 종료 시 자동 GameOver 연결
+* 게임 상태별 UI 전환
+* 점수 통합 (스테이지 + 시간 보너스)
+* 버튼 활성/비활성 처리
 
 ---
 
-### 🎥 Camera System
+## 🧱 기믹 블록
 
-#### 1. 플레이어 추적
-
-* Player 위치 기반 카메라 이동
-
-#### 2. 이동 제한
-
-* left / right / top / bottom 범위 제한
-
-#### 3. 강제 스크롤
-
-```csharp
-x = transform.position.x + (forceSpeedX * Time.deltaTime);
-```
-
-👉 플레이어와 무관하게 카메라 자동 이동
+* 플레이어 거리 감지 후 활성화
+* Static → Dynamic 전환 (낙하 시작)
+* 충돌 시 페이드 아웃 후 삭제
 
 ---
 
-### 🌄 Parallax (패럴랙스)
+## 🎥 카메라 시스템
 
-* 배경을 카메라보다 느리게 이동시켜 깊이감 표현
+* 플레이어 추적 + 이동 제한 (좌/우/상/하)
+* 강제 스크롤 (자동 진행 스테이지)
 
-```csharp
-x / 2.0f
-```
+### 📌 패럴랙스 효과
 
-👉 멀리 있는 배경일수록 더 느리게 움직임
+배경이 카메라보다 느리게 움직이는 효과
+
+* 가까운 오브젝트 → 빠르게 이동
+* 먼 배경 → 느리게 이동
+
+👉 시각적으로 거리감을 만들어 2D에서 3D 느낌을 구현
 
 ---
 
-## 🧾 주요 구조
+## 🔄 씬 시스템
 
-* playerController.cs
-  → 이동 / 점프 / 애니메이션 / 상태
+* SceneManager.LoadScene 사용
+* 버튼 기반 씬 이동 구조
 
-* GameManager.cs
-  → UI / 게임 상태 처리 / 타이머 연동
+---
 
-* CameraManager.cs
-  → 카메라 추적 / 강제 스크롤 / 패럴랙스
+## 🧾 주요 스크립트
 
-* TimeController.cs
-  → 시간 관리 (카운트다운/업)
-
-* ItemData.cs
-  → 아이템 데이터 저장
+* PlayerController.cs : 이동 / 점프 / 상태 / 점수
+* GameManager.cs : UI / 게임 상태 / 점수 관리
+* TimeController.cs : 타이머
+* CameraManager.cs : 카메라 + 패럴랙스 + 스크롤
+* GimmickBlock.cs : 기믹 블록 시스템
+* ItemData.cs : 아이템 데이터
+* ChangeScene.cs : 씬 전환
+* ResultManager.cs : 결과 점수 출력
 
 ---
 
 ## 🛠 사용 기술
 
-* Unity (2022.3.62f1)
+* Unity 2022.3.62f1
 * C#
-* Physics2D (Rigidbody2D, Linecast)
-* Animator
-* UI (Text, Image, Button)
-
----
-
-## 📁 특징
-
-* 입력 / 물리 / 상태 분리 구조
-* 시스템 간 연결 (Player ↔ Manager ↔ Timer)
-* 다양한 게임 방식 대응 가능
-
-  * 일반 플랫폼
-  * 시간 제한 게임
-  * 자동 스크롤 스테이지
-* 애니메이션 최적화 구조
-* 패럴랙스를 통한 원근감 구현
-
----
-
-## ⚠️ 개선 예정
-
-* string → enum 상태 관리 전환
-* GameObject.Find 제거 및 캐싱
-* 카메라 Lerp 적용 (부드러운 이동)
-* 패럴랙스 다중 레이어 확장
-* 코드 책임 분리 (Manager 분리)
-* 이벤트 기반 구조 적용
+* Rigidbody2D Physics
+* Unity UI (Text / Image / Button)
+* Scene Management
 
 ---
 
 ## 📌 상태
 
-* v1 ~ v4 구현 완료
-* 현재 구조 개선 및 최적화 진행 중
+* v5 시스템 통합 완료
+* 점수 / 시간 / 기믹 / 카메라 / UI 전체 연결
+* 이후 구조 최적화 및 enum 기반 리팩토링 예정
