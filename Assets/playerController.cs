@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class playerController : MonoBehaviour
 {
-    public static string gameState = "playing"; // 현재 게임 상태
+    public static string gameState = "playing"; // 게임 상태 (playing / gameclear / gameover)
 
-    Rigidbody2D rbody; // 물리 컴포넌트
+    Rigidbody2D rbody; // 물리 처리용
     float axisH = 0.0f; // 좌우 입력값
     public float speed = 3.0f; // 이동 속도
     public float jump = 9.0f; // 점프 힘
-    public LayerMask groundLayer; // 바닥 판정용 레이어
-    bool goJump = false; // 점프 입력 여부 (Update → FixedUpdate 전달)
-    bool onGround = false; // 바닥에 닿았는지 여부
+    public LayerMask groundLayer; // 바닥 판정 레이어
+    bool goJump = false; // 점프 입력 전달 플래그
+    bool onGround = false; // 바닥 여부
 
     Animator animator; // 애니메이터
     string stopAnime = "PlayerStop"; // 정지 애니메이션
@@ -26,10 +26,10 @@ public class playerController : MonoBehaviour
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>(); // Rigidbody 캐싱
-        gameState = "playing"; // 시작 상태 설정
+        gameState = "playing"; // 시작 상태
         animator = GetComponent<Animator>(); // Animator 캐싱
-        nowAnime = stopAnime; // 초기 애니메이션
-        oldAnime = stopAnime; // 이전 애니메이션 초기화
+        nowAnime = stopAnime;
+        oldAnime = stopAnime;
     }
 
     void Update()
@@ -41,16 +41,16 @@ public class playerController : MonoBehaviour
 
         axisH = Input.GetAxisRaw("Horizontal"); // 좌우 입력
 
-        if (axisH > 0.0f) // 오른쪽 이동 시 방향 전환
+        if (axisH > 0.0f) // 오른쪽 이동
         {
             transform.localScale = new Vector2(1, 1);
         }
-        else if (axisH < 0.0f) // 왼쪽 이동 시 방향 전환
+        else if (axisH < 0.0f) // 왼쪽 이동
         {
             transform.localScale = new Vector2(-1, 1);
         }
 
-        if (Input.GetButtonDown("Jump")) // 점프 입력 감지
+        if (Input.GetButtonDown("Jump")) // 점프 입력
         {
             Jump();
         }
@@ -63,22 +63,26 @@ public class playerController : MonoBehaviour
             return;
         }
 
-        // 바닥 체크 (아래 방향으로 짧은 레이캐스트)
-        onGround = Physics2D.Linecast(transform.position, transform.position - (transform.up * 0.1f), groundLayer);
+        // 캐릭터 아래 Linecast로 바닥 체크
+        onGround = Physics2D.Linecast(
+            transform.position,
+            transform.position - (transform.up * 0.1f),
+            groundLayer
+        );
 
         if (onGround || axisH != 0) // 이동 처리
         {
             rbody.velocity = new Vector2(speed * axisH, rbody.velocity.y);
         }
 
-        if (onGround && goJump) // 점프 처리
+        if (onGround && goJump) // 점프 처리 (입력은 Update, 실행은 FixedUpdate)
         {
             Vector2 jumpPw = new Vector2(0, jump);
             rbody.AddForce(jumpPw, ForceMode2D.Impulse);
-            goJump = false; // 점프 플래그 초기화
+            goJump = false;
         }
 
-        // 애니메이션 상태 결정
+        // 상태에 따른 애니메이션 결정
         if (onGround)
         {
             if (axisH == 0)
@@ -95,7 +99,8 @@ public class playerController : MonoBehaviour
             nowAnime = jumpAnime;
         }
 
-        if (nowAnime != oldAnime) // 애니메이션 변경 시에만 실행
+        // 애니메이션 변경 시에만 실행
+        if (nowAnime != oldAnime)
         {
             oldAnime = nowAnime;
             animator.Play(nowAnime);
@@ -109,11 +114,11 @@ public class playerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Goal") // 목표 지점 도달
+        if (collision.gameObject.tag == "Goal") // 클리어 트리거
         {
             Goal();
         }
-        else if (collision.gameObject.tag == "Dead") // 사망 영역 충돌
+        else if (collision.gameObject.tag == "Dead") // 사망 트리거
         {
             GameOver();
         }
@@ -121,17 +126,17 @@ public class playerController : MonoBehaviour
 
     public void Goal()
     {
-        animator.Play(goalAnime); // 클리어 애니메이션 실행
+        animator.Play(goalAnime); // 클리어 애니메이션
         gameState = "gameclear"; // 상태 변경
         GameStop(); // 이동 정지
     }
 
     public void GameOver()
     {
-        animator.Play(deadAnime); // 사망 애니메이션 실행
+        animator.Play(deadAnime); // 사망 애니메이션
 
         gameState = "gameover"; // 상태 변경
-        GameStop(); // 이동 정지
+        GameStop();
 
         GetComponent<CapsuleCollider2D>().enabled = false; // 충돌 비활성화
         rbody.AddForce(new Vector2(0, 5), ForceMode2D.Impulse); // 위로 튕김 효과
@@ -139,7 +144,7 @@ public class playerController : MonoBehaviour
 
     void GameStop()
     {
-        rbody.velocity = new Vector2(0, 0); // 속도 초기화
+        rbody.velocity = new Vector2(0, 0); // 즉시 정지
     }
 }
 
@@ -163,7 +168,7 @@ public class playerController : MonoBehaviour
         gameClear
     }
 
-    public static state gameState = state.Playing; // 현재 게임 상태
+    public static state gameState = state.Playing; // 게임 상태
 
     Rigidbody2D rbody;
     float axisH = 0.0f;
@@ -193,64 +198,38 @@ public class playerController : MonoBehaviour
 
     void Update()
     {
-        if (gameState != state.Playing)
-        {
-            return;
-        }
+        if (gameState != state.Playing) return;
 
         axisH = Input.GetAxisRaw("Horizontal");
 
         if (axisH > 0.0f)
-        {
             transform.localScale = new Vector2(1, 1);
-        }
         else if (axisH < 0.0f)
-        {
             transform.localScale = new Vector2(-1, 1);
-        }
 
         if (Input.GetButtonDown("Jump"))
-        {
             Jump();
-        }
     }
 
     private void FixedUpdate()
     {
-        if (gameState != state.Playing)
-        {
-            return;
-        }
+        if (gameState != state.Playing) return;
 
         onGround = Physics2D.Linecast(transform.position, transform.position - (transform.up * 0.1f), groundLayer);
 
         if (onGround || axisH != 0)
-        {
             rbody.velocity = new Vector2(speed * axisH, rbody.velocity.y);
-        }
 
         if (onGround && goJump)
         {
-            Vector2 jumpPw = new Vector2(0, jump);
-            rbody.AddForce(jumpPw, ForceMode2D.Impulse);
+            rbody.AddForce(new Vector2(0, jump), ForceMode2D.Impulse);
             goJump = false;
         }
 
         if (onGround)
-        {
-            if (axisH == 0)
-            {
-                nowAnime = stopAnime;
-            }
-            else
-            {
-                nowAnime = moveAnime;
-            }
-        }
+            nowAnime = (axisH == 0) ? stopAnime : moveAnime;
         else
-        {
             nowAnime = jumpAnime;
-        }
 
         if (nowAnime != oldAnime)
         {
@@ -267,13 +246,9 @@ public class playerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Goal")
-        {
             Goal();
-        }
         else if (collision.gameObject.tag == "Dead")
-        {
             GameOver();
-        }
     }
 
     public void Goal()
