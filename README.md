@@ -7,70 +7,84 @@
 ## 📌 프로젝트 소개
 
 Unity로 제작한 2D 플랫폼 게임 프로토타입입니다.
-플레이어의 이동, 점프, 충돌 판정, 게임 상태 처리 및 애니메이션 전환까지 포함한 기본적인 게임 구조를 구현했습니다.
+플레이어 이동, 점프, 충돌 처리, 애니메이션, 게임 상태 관리, 카메라 시스템까지 포함한 기본적인 게임 구조를 구현했습니다.
 
-현재 버전(v2)은 단순 이동 구현을 넘어 상태 기반 로직과 애니메이션 처리 흐름을 구성하는 단계입니다.
+v3에서는 기존 기능 구현을 기반으로
+구조 개선, 카메라 시스템 확장, 패럴랙스 효과 적용 등을 통해 완성도를 높이는 것을 목표로 했습니다.
 
 ---
 
 ## 🎮 주요 기능
 
-* 좌/우 이동 (Input.GetAxisRaw 기반 즉각 반응)
+* 좌/우 이동 (Input.GetAxisRaw 기반)
 * 스프라이트 방향 전환 (localScale)
-* 점프 시스템 (Rigidbody2D Impulse Force)
-* 점프 입력 분리 (Update → FixedUpdate 구조)
+* 점프 시스템 (Rigidbody2D Impulse)
+* 입력 / 물리 처리 분리 (Update / FixedUpdate)
 * 바닥 체크 (Physics2D Linecast)
 * 상태 기반 애니메이션 전환
-* 게임 상태 처리 (playing / gameclear / gameover)
+* 게임 상태 관리 (playing / gameclear / gameover / gameend)
 * Goal / Dead 트리거 기반 이벤트 처리
+* 카메라 추적 시스템 (이동 제한 포함)
+* 패럴랙스 효과 (배경 속도 차이를 통한 원근감 구현)
 
 ---
 
 ## 🧠 핵심 시스템 설명
 
-### 이동
+### 이동 & 점프
 
-* GetAxisRaw로 즉각적인 입력 반응 처리
-* Rigidbody2D.velocity를 이용한 이동 구현
-* 방향에 따라 캐릭터 스케일 반전
+* GetAxisRaw로 즉각적인 입력 처리
+* Rigidbody2D.velocity로 이동 구현
+* AddForce(Impulse)를 이용한 점프 처리
+* Update에서 입력, FixedUpdate에서 물리 적용
 
-### 점프
+---
 
-* Update에서 입력 감지 후 goJump 플래그 설정
-* FixedUpdate에서 실제 물리 적용
-* onGround 상태일 때만 점프 가능
+### 상태 기반 제어
 
-### 바닥 체크
-
-* Linecast를 이용해 캐릭터 아래 충돌 검사
-* groundLayer 기준으로 바닥 여부 판단
-
-### 애니메이션
-
-* 상태에 따라 애니메이션 분기 (Idle / Move / Jump 등)
-* 이전 상태와 비교하여 변경 시에만 실행
-
-### 게임 상태
-
-* string 기반 상태 관리
+* string 기반 gameState로 전체 흐름 제어
 * playing 상태에서만 입력 및 물리 처리 허용
-* Goal / Dead 충돌 시 상태 변경
+* gameclear / gameover 시 게임 종료 처리
+
+---
+
+### 애니메이션 시스템
+
+* 상태에 따라 애니메이션 분기
+* 이전 상태(oldAnime)와 비교하여 변경 시에만 실행
+
+---
+
+### 카메라 시스템
+
+* Player 위치를 기준으로 카메라 추적
+* left / right / top / bottom 제한으로 이동 범위 제어
+
+---
+
+### 패럴랙스 (Parallax)
+
+* 배경(subScreen)을 카메라보다 느리게 이동
+* x좌표의 일부만 반영하여 깊이감 표현
+
+```csharp
+x / 2.0f
+```
+
+👉 멀리 있는 배경일수록 더 느리게 움직이는 효과 구현
 
 ---
 
 ## 🧾 주요 구조
 
 * playerController.cs
-  → 이동, 점프, 애니메이션, 상태 처리 통합 관리
+  → 이동, 점프, 애니메이션, 상태 처리
 
-* Update
-  → 입력 처리
+* GameManager.cs
+  → UI 및 게임 종료 상태 처리
 
-* FixedUpdate
-  → 물리 연산 및 애니메이션 상태 결정
-
-* OnTriggerEnter2D
-  → 게임 이벤트 처리 (클리어 / 사망)
+* CameraManager.cs
+  → 카메라 추적 및 패럴랙스 처리
 
 ---
 
@@ -85,23 +99,25 @@ Unity로 제작한 2D 플랫폼 게임 프로토타입입니다.
 
 ## 📁 특징
 
-* 입력 / 물리 / 상태 로직 분리 구조
-* 애니메이션 중복 실행 방지 처리
+* 입력 / 물리 / 상태 분리 구조
 * 상태 기반 게임 흐름 제어
-* 기본 플랫폼 게임 구조 구현
+* 애니메이션 최적화 (중복 실행 방지)
+* 카메라 이동 제한 시스템
+* 패럴랙스를 활용한 원근감 구현
 
 ---
 
 ## ⚠️ 개선 예정
 
 * string → enum 기반 상태 관리 전환
-* Player / GameManager 역할 분리
-* 애니메이션 처리 구조 개선
-* 코드 재사용성 및 구조 정리
+* GameObject.Find 제거 및 캐싱 구조 적용
+* 카메라 부드러운 이동 (Lerp)
+* 패럴랙스 다중 레이어 확장
+* 코드 역할 분리 강화 (Player / Manager)
 
 ---
 
 ## 📌 상태
 
-* v1 ~ v2 구현 완료
-* 현재 구조 개선 및 리팩토링 진행 중
+* v1 ~ v3 구현 완료
+* 현재 구조 개선 및 최적화 단계 진행 중
