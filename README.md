@@ -7,10 +7,11 @@
 ## 📌 프로젝트 소개
 
 Unity로 제작한 2D 플랫폼 게임 프로토타입입니다.
-플레이어 이동, 점프, 충돌 처리, 애니메이션, 게임 상태 관리, 카메라 시스템까지 포함한 기본적인 게임 구조를 구현했습니다.
+플레이어 이동, 점프, 애니메이션, 카메라 시스템, 타이머, UI까지 포함하여
+기본적인 게임 플레이 구조를 완성했습니다.
 
-v3에서는 기존 기능 구현을 기반으로
-구조 개선, 카메라 시스템 확장, 패럴랙스 효과 적용 등을 통해 완성도를 높이는 것을 목표로 했습니다.
+v4에서는 단순 기능 구현을 넘어서
+각 시스템을 연결하고, 다양한 게임 상황(시간 제한, 강제 스크롤 등)을 처리할 수 있도록 확장했습니다.
 
 ---
 
@@ -21,70 +22,107 @@ v3에서는 기존 기능 구현을 기반으로
 * 점프 시스템 (Rigidbody2D Impulse)
 * 입력 / 물리 처리 분리 (Update / FixedUpdate)
 * 바닥 체크 (Physics2D Linecast)
-* 상태 기반 애니메이션 전환
+* 상태 기반 애니메이션 시스템
 * 게임 상태 관리 (playing / gameclear / gameover / gameend)
 * Goal / Dead 트리거 기반 이벤트 처리
-* 카메라 추적 시스템 (이동 제한 포함)
-* 패럴랙스 효과 (배경 속도 차이를 통한 원근감 구현)
+* 카메라 추적 + 이동 제한 시스템
+* 카메라 강제 스크롤 (자동 이동)
+* 패럴랙스 효과 (배경 원근감)
+* 타이머 시스템 (카운트다운 / 카운트업)
+* 시간 종료 시 게임오버 처리
+* UI (결과 화면 / 타이머 표시)
 
 ---
 
 ## 🧠 핵심 시스템 설명
 
-### 이동 & 점프
+### 🎯 Player Controller
 
-* GetAxisRaw로 즉각적인 입력 처리
-* Rigidbody2D.velocity로 이동 구현
-* AddForce(Impulse)를 이용한 점프 처리
-* Update에서 입력, FixedUpdate에서 물리 적용
-
----
-
-### 상태 기반 제어
-
-* string 기반 gameState로 전체 흐름 제어
-* playing 상태에서만 입력 및 물리 처리 허용
-* gameclear / gameover 시 게임 종료 처리
+* 입력(Update)과 물리(FixedUpdate) 분리 구조
+* goJump 플래그로 입력 → 물리 타이밍 동기화
+* 상태 기반으로 전체 행동 제어
 
 ---
 
-### 애니메이션 시스템
+### 🎬 Animation System
 
-* 상태에 따라 애니메이션 분기
-* 이전 상태(oldAnime)와 비교하여 변경 시에만 실행
-
----
-
-### 카메라 시스템
-
-* Player 위치를 기준으로 카메라 추적
-* left / right / top / bottom 제한으로 이동 범위 제어
+* 현재/이전 상태 비교 방식
+* 변경 시에만 애니메이션 실행 (중복 방지)
 
 ---
 
-### 패럴랙스 (Parallax)
+### 🧩 Game State
 
-* 배경(subScreen)을 카메라보다 느리게 이동
-* x좌표의 일부만 반영하여 깊이감 표현
+* string 기반 상태 관리
+* 게임 흐름 제어 핵심
+
+```csharp
+playing → gameclear / gameover → gameend
+```
+
+---
+
+### ⏱ Timer System
+
+* TimeController를 통한 시간 관리
+* 카운트다운 / 카운트업 모두 지원
+
+```csharp
+displayTime = gameTime - times;
+```
+
+* 시간 종료 시 자동 GameOver 연결
+
+---
+
+### 🎥 Camera System
+
+#### 1. 플레이어 추적
+
+* Player 위치 기반 카메라 이동
+
+#### 2. 이동 제한
+
+* left / right / top / bottom 범위 제한
+
+#### 3. 강제 스크롤
+
+```csharp
+x = transform.position.x + (forceSpeedX * Time.deltaTime);
+```
+
+👉 플레이어와 무관하게 카메라 자동 이동
+
+---
+
+### 🌄 Parallax (패럴랙스)
+
+* 배경을 카메라보다 느리게 이동시켜 깊이감 표현
 
 ```csharp
 x / 2.0f
 ```
 
-👉 멀리 있는 배경일수록 더 느리게 움직이는 효과 구현
+👉 멀리 있는 배경일수록 더 느리게 움직임
 
 ---
 
 ## 🧾 주요 구조
 
 * playerController.cs
-  → 이동, 점프, 애니메이션, 상태 처리
+  → 이동 / 점프 / 애니메이션 / 상태
 
 * GameManager.cs
-  → UI 및 게임 종료 상태 처리
+  → UI / 게임 상태 처리 / 타이머 연동
 
 * CameraManager.cs
-  → 카메라 추적 및 패럴랙스 처리
+  → 카메라 추적 / 강제 스크롤 / 패럴랙스
+
+* TimeController.cs
+  → 시간 관리 (카운트다운/업)
+
+* ItemData.cs
+  → 아이템 데이터 저장
 
 ---
 
@@ -94,30 +132,36 @@ x / 2.0f
 * C#
 * Physics2D (Rigidbody2D, Linecast)
 * Animator
+* UI (Text, Image, Button)
 
 ---
 
 ## 📁 특징
 
 * 입력 / 물리 / 상태 분리 구조
-* 상태 기반 게임 흐름 제어
-* 애니메이션 최적화 (중복 실행 방지)
-* 카메라 이동 제한 시스템
-* 패럴랙스를 활용한 원근감 구현
+* 시스템 간 연결 (Player ↔ Manager ↔ Timer)
+* 다양한 게임 방식 대응 가능
+
+  * 일반 플랫폼
+  * 시간 제한 게임
+  * 자동 스크롤 스테이지
+* 애니메이션 최적화 구조
+* 패럴랙스를 통한 원근감 구현
 
 ---
 
 ## ⚠️ 개선 예정
 
-* string → enum 기반 상태 관리 전환
-* GameObject.Find 제거 및 캐싱 구조 적용
-* 카메라 부드러운 이동 (Lerp)
+* string → enum 상태 관리 전환
+* GameObject.Find 제거 및 캐싱
+* 카메라 Lerp 적용 (부드러운 이동)
 * 패럴랙스 다중 레이어 확장
-* 코드 역할 분리 강화 (Player / Manager)
+* 코드 책임 분리 (Manager 분리)
+* 이벤트 기반 구조 적용
 
 ---
 
 ## 📌 상태
 
-* v1 ~ v3 구현 완료
-* 현재 구조 개선 및 최적화 단계 진행 중
+* v1 ~ v4 구현 완료
+* 현재 구조 개선 및 최적화 진행 중
