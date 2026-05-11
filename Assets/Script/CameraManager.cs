@@ -16,14 +16,9 @@ public class CameraManager : MonoBehaviour
 
     public GameObject subScreen; // 패럴랙스 배경
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
-        // Player 탐색 (현재 매 프레임 검색)
+        //매 프레임 Player를 탐색해 위치값을 가져옴
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (player != null)
@@ -39,7 +34,7 @@ public class CameraManager : MonoBehaviour
                 x = transform.position.x + (forceSpeedX * Time.deltaTime);
             }
 
-            // X 범위 제한
+            // 카메라가 지정된 좌우 범위를 벗어나지 않도록 제한
             if (x < leftLimit)
             {
                 x = leftLimit;
@@ -55,7 +50,7 @@ public class CameraManager : MonoBehaviour
                 y = transform.position.y + (forceSpeedY * Time.deltaTime);
             }
 
-            // Y 범위 제한
+            // 카메라가 지정된 상하 범위를 벗어나지 않도록 제한
             if (y < bottomLimit)
             {
                 y = bottomLimit;

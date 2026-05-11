@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] GameObject mainImage;      // 결과 이미지 (게임오버 / 클리어)
+    [SerializeField] GameObject mainImage;      // gameStart이미지
     [SerializeField] Sprite gameOverSpr;        // 게임오버 스프라이트
     [SerializeField] Sprite gameClearSpr;       // 클리어 스프라이트
     [SerializeField] GameObject panel;          // 결과 패널
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     {
         timeCnt = GetComponent<TimeController>(); // 타이머 연결
 
-        // 타이머 사용 안 할 경우 UI 비활성화
+        // timeCnt를 사용하면 초기화 작업 & timeBar 가림, 사용안하면 X
         if (timeCnt != null)
         {
             if (timeCnt.gameTime == 0f)
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Invoke("InactiveImage", 1f); // 시작 이미지 숨김
+        Invoke("InactiveImage", 1f); // 시작 이미지 1초뒤 숨김
         panel.SetActive(false);      // 결과 UI 비활성화
 
         UpdateScore(); // 점수 초기화
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         // ===== 플레이 중 =====
         else if (playerController.gameState == "playing")
         {
-            // Player 탐색
+            // Player 찾기
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             playerController playerCnt = player.GetComponent<playerController>();
 

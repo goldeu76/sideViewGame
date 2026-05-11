@@ -9,7 +9,7 @@ public class TimeController : MonoBehaviour
     public bool isTimeOver = false; // 시간 종료 여부
     public float displayTime = 0f; // UI 표시용 시간
 
-    float times = 0f; // 실제 경과 시간
+    float times = 0f; // 실제 경과 시간 누적값
 
     void Start()
     {

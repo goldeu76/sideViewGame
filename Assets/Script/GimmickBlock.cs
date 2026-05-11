@@ -15,7 +15,7 @@ public class GimmickBlock : MonoBehaviour
     void Start()
     {
         rbody = GetComponent<Rigidbody2D>(); // Rigidbody 캐싱
-        rbody.bodyType = RigidbodyType2D.Static; // 시작은 고정 상태
+        rbody.bodyType = RigidbodyType2D.Static; // 시작은 static(중력 영향을 안받게 하기 위해서)상태
     }
 
     void Update()
@@ -25,7 +25,7 @@ public class GimmickBlock : MonoBehaviour
 
         if (player != null)
         {
-            // 플레이어와 거리 계산
+            // 플레이어와 스크립트를 가진 오브젝트와의 거리 계산
             float d = Vector2.Distance(transform.position, player.transform.position);
 
             // 감지 범위 안에 들어오면
@@ -34,7 +34,7 @@ public class GimmickBlock : MonoBehaviour
                 // 아직 Static 상태일 때만
                 if (rbody.bodyType == RigidbodyType2D.Static)
                 {
-                    rbody.bodyType = RigidbodyType2D.Dynamic; // 물리 활성화 (낙하 시작)
+                    rbody.bodyType = RigidbodyType2D.Dynamic; //물리 상태를 dynamic상태로 전환(물체를 낙하시키기 위해 중력의 영향을 받는 dynamic으로 바꿈)
                 }
             }
         }
@@ -44,12 +44,12 @@ public class GimmickBlock : MonoBehaviour
         {
             fadeTime -= Time.deltaTime; // 시간 감소
 
-            // 알파값 감소 (투명 처리)
+            // 알파값을 감소시켜 점점 투명하게 만듦
             Color col = GetComponent<SpriteRenderer>().color;
             col.a = fadeTime;
             GetComponent<SpriteRenderer>().color = col;
 
-            // 완전히 사라지면 제거
+            // fadeTime이 0보다 작아지면 즉시 제거
             if (fadeTime <= 0.0f)
             {
                 Destroy(gameObject);
@@ -59,7 +59,7 @@ public class GimmickBlock : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // 삭제 옵션이 켜져 있으면 충돌 시 페이드 시작
+        // 삭제 옵션이 켜져 있으면 충돌 시 페이드 시작(isDelete가 false면 삭제 X)
         if (isDelete)
         {
             isFall = true;

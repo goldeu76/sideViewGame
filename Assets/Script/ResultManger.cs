@@ -12,9 +12,4 @@ public class ResultManger : MonoBehaviour
         // GameManager에 저장된 총 점수를 결과 화면에 출력
         scoreText.GetComponent<Text>().text = GameManager.totalScore.ToString();
     }
-
-    void Update()
-    {
-        // 사용 안함
-    }
 }

@@ -5,11 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class ChangeScene : MonoBehaviour
 {
-    [SerializeField] string sceneName; // 이동할 씬 이름
+    [SerializeField] string sceneName; //불러올 씬 이름
 
     public void Load()
     {
-        // 지정된 씬으로 전환
         SceneManager.LoadScene(sceneName);
     }
 }

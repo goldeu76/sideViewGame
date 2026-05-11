@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -987,6 +986,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4519776109608173729, guid: 94d7b7d9ac3e63542bbe908bd37d62dc, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1954558185}
     - target: {fileID: 6035431933344761223, guid: 94d7b7d9ac3e63542bbe908bd37d62dc, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1946,6 +1949,87 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 175190757a2fd39478754dfa2ee03f70, type: 3}
+--- !u!1001 &3218162847903064664
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3304807999629058468, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_Name
+      value: MovingBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890181085677508080, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: wait
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: moveX
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: moveY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: times
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112148049302647487, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
+      propertyPath: isMoveWhenOn
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ff43083677e0d7843a176453221ac8ee, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1972,3 +2056,4 @@ SceneRoots:
   - {fileID: 944036911}
   - {fileID: 34505872}
   - {fileID: 1286039286157747224}
+  - {fileID: 3218162847903064664}

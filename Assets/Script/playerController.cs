@@ -17,6 +17,7 @@ public class playerController : MonoBehaviour
 
     Animator animator;
 
+    //애니메이션 설정값
     string stopAnime = "PlayerStop";
     string moveAnime = "PlayerMove";
     string jumpAnime = "PlayerJump";
@@ -33,7 +34,7 @@ public class playerController : MonoBehaviour
         rbody = GetComponent<Rigidbody2D>();
         gameState = "playing";
         animator = GetComponent<Animator>();
-
+  
         nowAnime = stopAnime;
         oldAnime = stopAnime;
     }
@@ -109,7 +110,11 @@ public class playerController : MonoBehaviour
             nowAnime = jumpAnime;
         }
 
-        // 애니메이션 변경 시에만 실행
+        // 애니메이션이 변경된 경우에만 실행 (같은 상태에서 반복 재생 방지)
+        // 현재 상태(nowAnime)를 이전 상태(oldAnime)와 비교하여
+        // 상태가 달라졌을 때만 애니메이션을 변경하고,
+        // 변경 후에는 현재 상태를 이전 상태로 저장하여
+        // 다음 프레임에서 동일 상태 반복 실행을 막는다
         if (nowAnime != oldAnime)
         {
             oldAnime = nowAnime;
