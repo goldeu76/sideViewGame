@@ -1,4 +1,4 @@
-# Swipe Platformer Prototype v6
+# Swipe Platformer Prototype v
 
 **작성 에디터 버전 : Unity 2022.3.62f1**
 
